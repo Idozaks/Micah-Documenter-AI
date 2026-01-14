@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClearLetter | מכתב ברור</title>
+    <style>
+        :root {
+            --primary: #0f172a;
+            --secondary: #64748b;
+            --accent: #3b82f6;
+            --background: #f8fafc;
+            --text: #1e293b;
+        }
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--background);
+            margin: 0;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1, h2, h3 {
+            color: var(--primary);
+        }
+        h1 {
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.5rem;
+            margin-top: 2rem;
+        }
+        h2 {
+            margin-top: 2rem;
+        }
+        code {
+            background: #e2e8f0;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        pre {
+            background: #1e293b;
+            color: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        ul {
+            padding-inline-start: 1.5rem;
+        }
+        li {
+            margin-bottom: 0.5rem;
+        }
+        hr {
+            margin: 3rem 0;
+            border: 0;
+            border-top: 1px solid #cbd5e1;
+        }
+        .english {
+            direction: ltr;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>ClearLetter | מכתב ברור</h1>
+    <p>הפוך מכתבים ביורוקרטיים מורכבים להסברים פשוטים וידידותיים.</p>
+    <p>ClearLetter הוא שירות אינטרנט המיועד לעזור למבוגרים ולכל מי שמרגיש מוצף ממסמכים רשמיים להבין מכתבים ביורוקרטיים מורכבים מעיריות, גופים ממשלתיים ומוסדות רפואיים.</p>
+
+    <h2>תכונות עיקריות</h2>
+    <ul>
+        <li><strong>פישוט מבוסס בינה מלאכותית</strong>: הופך שפה משפטית וסבוכה לשפה חמה, ברורה ופשוטה.</li>
+        <li><strong>ניתוח מסמכים רב-מודאלי</strong>: ניתן להעלות צילומים של מכתבים או להדביק טקסט ישירות.</li>
+        <li><strong>איורים חזותיים</strong>: יצירת תמונות בעזרת AI המסייעות להמחיש מושגים מרכזיים.</li>
+        <li><strong>מצגת אינטראקטיבית</strong>: הסבר שלב אחר שלב עם כפתורי שליטה.</li>
+        <li><strong>תמיכה דו-לשונית</strong>: תמיכה מלאה בעברית (RTL) ובאנגלית.</li>
+        <li><strong>נגישות בעדיפות עליונה</strong>: ניגודיות גבוהה, טקסט גדול ורווחים נדיבים לקריאה קלה.</li>
+    </ul>
+
+    <h2>איך זה עובד?</h2>
+    <ol>
+        <li><strong>הדבקה או העלאה</strong>: מזינים את טקסט המכתב או מעלים צילום של המסמך.</li>
+        <li><strong>ניתוח AI</strong>: המערכת קוראת ומבינה את תוכן המסמך.</li>
+        <li><strong>הסבר מפושט</strong>: מקבלים גרסה ידידותית וקלה להבנה הכוללת:
+            <ul>
+                <li>סיכום ברור</li>
+                <li>נקודות מפתח מודגשות</li>
+                <li>רשימת פעולות לביצוע</li>
+                <li>איורים חזותיים למושגים מרכזיים</li>
+            </ul>
+        </li>
+    </ol>
+
+    <h2>טכנולוגיות</h2>
+    <ul>
+        <li><strong>Frontend</strong>: React 18, TypeScript, Tailwind CSS, Framer Motion</li>
+        <li><strong>Backend</strong>: Node.js, Express, TypeScript</li>
+        <li><strong>AI Services</strong>: Google Gemini 2.5 Flash (טקסט וניתוח רב-מודאלי), Gemini 2.0 Flash (יצירת תמונות)</li>
+        <li><strong>עיצוב</strong>: רכיבי shadcn/ui עם דגש על נגישות.</li>
+    </ul>
+
+    <hr>
+
+    <div class="english">
+        <h1>ClearLetter (English)</h1>
+        <p>Transform complex bureaucratic documents into simple, friendly explanations.</p>
+        <p>ClearLetter is a web application designed to help elderly users and anyone overwhelmed by official documents understand complex bureaucratic letters from municipalities, government bodies, and medical institutions.</p>
+
+        <h2>Features</h2>
+        <ul>
+            <li><strong>AI-Powered Simplification</strong>: Transforms legalistic language into warm, clear explanations</li>
+            <li><strong>Multimodal Document Analysis</strong>: Upload photos of letters or paste text directly</li>
+            <li><strong>Visual Illustrations</strong>: AI-generated images to help explain key concepts</li>
+            <li><strong>Animated Presentation</strong>: Step-by-step explanation with playback controls</li>
+            <li><strong>Bilingual Support</strong>: Full Hebrew (RTL) and English language support</li>
+            <li><strong>Accessibility-First</strong>: High contrast, large text, and generous spacing for easy reading</li>
+        </ul>
+
+        <h2>How It Works</h2>
+        <ol>
+            <li><strong>Paste or Upload</strong>: Enter your official letter text or upload a photo of the document</li>
+            <li><strong>AI Analysis</strong>: The system reads and understands the document content</li>
+            <li><strong>Simplified Explanation</strong>: Receive a friendly, easy-to-understand version with:
+                <ul>
+                    <li>Clear summary</li>
+                    <li>Key points highlighted</li>
+                    <li>Action items listed</li>
+                    <li>Visual illustrations for key concepts</li>
+                </ul>
+            </li>
+        </ol>
+
+        <h2>Tech Stack</h2>
+        <ul>
+            <li><strong>Frontend</strong>: React 18, TypeScript, Tailwind CSS, Framer Motion</li>
+            <li><strong>Backend</strong>: Node.js, Express, TypeScript</li>
+            <li><strong>AI Services</strong>: Google Gemini 2.5 Flash (text & multimodal), Gemini 2.0 Flash (image generation)</li>
+            <li><strong>Styling</strong>: shadcn/ui components with accessibility focus</li>
+        </ul>
+
+        <h2>Getting Started</h2>
+        <h3>Prerequisites</h3>
+        <ul>
+            <li>Node.js 20+</li>
+            <li>Replit AI Integrations (for Gemini API access)</li>
+        </ul>
+
+        <h3>Installation</h3>
+        <pre><code>npm install</code></pre>
+
+        <h3>Development</h3>
+        <pre><code>npm run dev</code></pre>
+
+        <h2>API Endpoints</h2>
+        <ul>
+            <li><code>POST /api/simplify</code> - Simplify text content</li>
+            <li><code>POST /api/simplify-image</code> - Analyze and simplify document images</li>
+        </ul>
+    </div>
+</body>
+</html>
