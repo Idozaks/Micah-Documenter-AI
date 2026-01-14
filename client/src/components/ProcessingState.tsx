@@ -1,5 +1,7 @@
+import { useState, useEffect } from "react";
 import { Loader2, FileText, Sparkles, Image } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/hooks/useLanguage";
 
@@ -7,8 +9,39 @@ interface ProcessingStateProps {
   step: "simplifying" | "generating" | "complete";
 }
 
+function useLogarithmicProgress(durationSeconds: number = 30) {
+  const [progress, setProgress] = useState(0);
+  const [startTime] = useState(() => Date.now());
+
+  useEffect(() => {
+    const k = 9;
+    const maxLog = Math.log(1 + durationSeconds * k);
+
+    const updateProgress = () => {
+      const elapsed = (Date.now() - startTime) / 1000;
+      
+      if (elapsed >= durationSeconds) {
+        setProgress(99);
+        return;
+      }
+
+      const logProgress = Math.log(1 + elapsed * k) / maxLog;
+      const smoothProgress = Math.min(logProgress * 99, 99);
+      setProgress(smoothProgress);
+    };
+
+    const intervalId = setInterval(updateProgress, 50);
+    updateProgress();
+
+    return () => clearInterval(intervalId);
+  }, [startTime, durationSeconds]);
+
+  return progress;
+}
+
 export function ProcessingState({ step }: ProcessingStateProps) {
   const { t } = useLanguage();
+  const progress = useLogarithmicProgress(30);
 
   const steps = [
     { id: "simplifying", label: t("stepReading"), icon: FileText },
@@ -80,9 +113,27 @@ export function ProcessingState({ step }: ProcessingStateProps) {
               })}
             </div>
 
-            <p className="mt-8 text-sm text-muted-foreground">
-              {t("usuallyTakes")}
-            </p>
+            <div className="w-full max-w-md mt-8 space-y-3">
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+              >
+                <Progress 
+                  value={progress} 
+                  className="h-3"
+                  data-testid="progress-bar"
+                />
+              </motion.div>
+              <motion.p 
+                className="text-sm text-muted-foreground text-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.7 }}
+              >
+                {t("usuallyTakes")}
+              </motion.p>
+            </div>
           </div>
         </Card>
       </div>
