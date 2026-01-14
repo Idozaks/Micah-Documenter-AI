@@ -1,11 +1,5 @@
-import OpenAI from "openai";
 import { GoogleGenAI } from "@google/genai";
 import type { SimplifiedResult } from "@shared/schema";
-
-const openai = new OpenAI({
-  apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
-  baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
-});
 
 const geminiApiKey = process.env.AI_INTEGRATIONS_GEMINI_API_KEY;
 const geminiBaseUrl = process.env.AI_INTEGRATIONS_GEMINI_BASE_URL;
@@ -60,20 +54,25 @@ The tone should be:
 }
 
 export async function simplifyText(originalText: string, language: "he" | "en" = "he"): Promise<SimplifiedResult> {
-  const response = await openai.chat.completions.create({
-    model: "gpt-5",
-    messages: [
-      { role: "system", content: getSystemPrompt(language) },
-      { role: "user", content: originalText },
-    ],
-    response_format: { type: "json_object" },
-    max_completion_tokens: 2048,
+  const genAI = getGeminiClient();
+  const isHebrew = language === "he";
+  
+  const prompt = `${getSystemPrompt(language)}
+
+Here is the letter/document to simplify:
+
+${originalText}`;
+
+  const response = await genAI.models.generateContent({
+    model: "gemini-2.5-flash",
+    contents: [{ role: "user", parts: [{ text: prompt }] }],
   });
 
-  const content = response.choices[0]?.message?.content || "{}";
-  const parsed = JSON.parse(content);
+  const content = response.text || "{}";
+  const cleanedContent = content.replace(/```json\n?|\n?```/g, "").trim();
+  const parsed = JSON.parse(cleanedContent);
 
-  const fallbackSummary = language === "he" 
+  const fallbackSummary = isHebrew 
     ? "לא הצלחנו לסכם את המכתב הזה." 
     : "Unable to summarize this letter.";
   

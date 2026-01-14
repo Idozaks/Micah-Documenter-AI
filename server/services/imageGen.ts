@@ -26,7 +26,7 @@ Illustrate this concept: "${keyPoint}"
 Create a simple, friendly illustration that helps explain this point visually.`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash-image",
+      model: "gemini-2.0-flash-preview-image-generation",
       contents: [{ role: "user", parts: [{ text: prompt }] }],
       config: {
         responseModalities: [Modality.TEXT, Modality.IMAGE],

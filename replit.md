@@ -42,11 +42,11 @@ Languages supported: Hebrew, English (toggle in header)
 - `POST /api/simplify-image` - Accepts image uploads and analyzes documents directly using Gemini multimodal AI
 
 ### AI Services
-- **Text Simplification**: OpenAI GPT models via Replit AI Integrations
+- **Text Simplification**: Google Gemini (gemini-2.5-flash) via Replit AI Integrations
   - Converts complex legal/bureaucratic text to simple language
   - Extracts action items, key points, and determines tone
   - Returns structured JSON response
-- **Image Generation**: Google Gemini (gemini-2.5-flash-image) via Replit AI Integrations
+- **Image Generation**: Google Gemini (gemini-2.0-flash-preview-image-generation) via Replit AI Integrations
   - Creates calming, professional illustrations for key points
   - Soft colors, minimalist iconographic style
 - **Multimodal Document Analysis**: Google Gemini (gemini-2.5-flash) via Replit AI Integrations
