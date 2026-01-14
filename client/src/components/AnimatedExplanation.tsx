@@ -15,7 +15,7 @@ interface AnimatedExplanationProps {
   onPlayingChange: (playing: boolean) => void;
 }
 
-const SLIDE_DURATION = 8000; // 8 seconds per slide
+const SLIDE_DURATION = 12000; // 12 seconds per slide
 
 export function AnimatedExplanation({
   summary,
@@ -202,8 +202,8 @@ export function AnimatedExplanation({
         </div>
       </div>
 
-      {/* Controls */}
-      <div className="flex items-center justify-center gap-3 md:gap-4">
+      {/* Controls - Large and easy to tap */}
+      <div className="flex items-center justify-center gap-4 md:gap-6">
         <Button
           variant="outline"
           size="lg"
@@ -211,14 +211,14 @@ export function AnimatedExplanation({
           disabled={currentSlide === 0}
           aria-label={t("previous")}
           data-testid="button-prev-slide"
-          className="gap-2 px-4 md:px-6"
+          className="gap-3 px-6 md:px-8 py-6 text-lg font-semibold min-w-[140px] md:min-w-[160px]"
         >
           {isRTL ? (
-            <SkipForward className="w-5 h-5" aria-hidden="true" />
+            <SkipForward className="w-6 h-6" aria-hidden="true" />
           ) : (
-            <SkipBack className="w-5 h-5" aria-hidden="true" />
+            <SkipBack className="w-6 h-6" aria-hidden="true" />
           )}
-          <span className="hidden sm:inline">{t("previous")}</span>
+          <span>{t("previous")}</span>
         </Button>
 
         <Button
@@ -227,16 +227,16 @@ export function AnimatedExplanation({
           onClick={() => onPlayingChange(!isPlaying)}
           aria-label={isPlaying ? t("pause") : t("play")}
           data-testid="button-play-pause"
-          className="gap-2 px-6 md:px-8 min-w-[120px]"
+          className="gap-3 px-8 md:px-10 py-6 text-lg font-semibold min-w-[140px] md:min-w-[160px] shadow-lg"
         >
           {isPlaying ? (
             <>
-              <Pause className="w-5 h-5" aria-hidden="true" />
+              <Pause className="w-6 h-6" aria-hidden="true" />
               <span>{t("pause")}</span>
             </>
           ) : (
             <>
-              <Play className="w-5 h-5" aria-hidden="true" />
+              <Play className="w-6 h-6" aria-hidden="true" />
               <span>{t("play")}</span>
             </>
           )}
@@ -249,27 +249,27 @@ export function AnimatedExplanation({
           disabled={currentSlide === totalSlides - 1}
           aria-label={t("next")}
           data-testid="button-next-slide"
-          className="gap-2 px-4 md:px-6"
+          className="gap-3 px-6 md:px-8 py-6 text-lg font-semibold min-w-[140px] md:min-w-[160px]"
         >
-          <span className="hidden sm:inline">{t("next")}</span>
+          <span>{t("next")}</span>
           {isRTL ? (
-            <SkipBack className="w-5 h-5" aria-hidden="true" />
+            <SkipBack className="w-6 h-6" aria-hidden="true" />
           ) : (
-            <SkipForward className="w-5 h-5" aria-hidden="true" />
+            <SkipForward className="w-6 h-6" aria-hidden="true" />
           )}
         </Button>
       </div>
 
-      {/* Dot navigation */}
-      <div className="flex justify-center gap-3">
+      {/* Dot navigation - Larger dots */}
+      <div className="flex justify-center gap-4">
         {slides.map((slide, index) => (
           <button
             key={index}
             onClick={() => goToSlide(index)}
             className={`transition-all rounded-full ${
               index === currentSlide
-                ? "w-10 h-4 bg-primary"
-                : "w-4 h-4 bg-muted hover:bg-muted-foreground/40"
+                ? "w-14 h-5 bg-primary shadow-md"
+                : "w-5 h-5 bg-muted hover:bg-muted-foreground/40 hover:scale-110"
             }`}
             aria-label={`${t("goToSlide") || "Go to slide"} ${index + 1}: ${slide.title}`}
             data-testid={`slide-dot-${index}`}
