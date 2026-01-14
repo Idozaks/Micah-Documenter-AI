@@ -69,7 +69,7 @@ export function AnimatedExplanation({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.4 }}
-            className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center"
+            className="absolute inset-0 flex flex-col items-center justify-center p-4 md:p-8 text-center overflow-hidden"
           >
             {currentSlideData.image && (
               <div className="mb-4 w-32 h-32 md:w-40 md:h-40 rounded-xl overflow-hidden shadow-lg">
@@ -85,7 +85,7 @@ export function AnimatedExplanation({
               {currentSlideData.title}
             </span>
 
-            <p className="text-xl md:text-2xl lg:text-3xl font-medium text-foreground leading-relaxed max-w-2xl">
+            <p className="text-lg md:text-2xl lg:text-3xl font-medium text-foreground leading-relaxed max-w-2xl break-words overflow-hidden">
               {currentSlideData.content}
             </p>
           </motion.div>
