@@ -61,6 +61,9 @@ export const translations = {
     somethingWentWrong: "משהו השתבש",
     failedToProcess: "לא הצלחנו לעבד את המכתב. אנא נסו שוב.",
     processingImage: "מעבדים תמונה...",
+    currentSlide: "שקף נוכחי",
+    total: "סה״כ",
+    goToSlide: "עבור לשקף",
     sampleLetter: `לכבוד התושב/ת,
 
 הנדון: הודעה על בחינת שומה מחדש - הערכת מס רכוש לשנת תשפ"ה
@@ -139,6 +142,9 @@ export const translations = {
     somethingWentWrong: "Something went wrong",
     failedToProcess: "Failed to process your letter. Please try again.",
     processingImage: "Processing image...",
+    currentSlide: "Current",
+    total: "Total",
+    goToSlide: "Go to slide",
     sampleLetter: `Dear Resident,
 
 Re: Notice of Assessment Review - Property Tax Reassessment FY 2024-2025
