@@ -8,12 +8,12 @@ import { useLanguage } from "@/hooks/useLanguage";
 
 interface LetterInputProps {
   onSubmit: (text: string) => void;
+  onSubmitImage: (file: File) => void;
   isLoading: boolean;
 }
 
-export function LetterInput({ onSubmit, isLoading }: LetterInputProps) {
+export function LetterInput({ onSubmit, onSubmitImage, isLoading }: LetterInputProps) {
   const [text, setText] = useState("");
-  const [isProcessingImage, setIsProcessingImage] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const { t } = useLanguage();
@@ -33,34 +33,10 @@ export function LetterInput({ onSubmit, isLoading }: LetterInputProps) {
     setText("");
   };
 
-  const processImage = async (file: File) => {
-    setIsProcessingImage(true);
-    try {
-      const formData = new FormData();
-      formData.append("image", file);
-
-      const response = await fetch("/api/ocr", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.text) {
-          setText((prev) => (prev ? prev + "\n\n" + data.text : data.text));
-        }
-      }
-    } catch (error) {
-      console.error("OCR failed:", error);
-    } finally {
-      setIsProcessingImage(false);
-    }
-  };
-
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      processImage(file);
+      onSubmitImage(file);
     }
     e.target.value = "";
   };
@@ -68,7 +44,7 @@ export function LetterInput({ onSubmit, isLoading }: LetterInputProps) {
   const handleCameraCapture = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      processImage(file);
+      onSubmitImage(file);
     }
     e.target.value = "";
   };
@@ -115,7 +91,7 @@ export function LetterInput({ onSubmit, isLoading }: LetterInputProps) {
                     variant="outline"
                     size="sm"
                     onClick={() => fileInputRef.current?.click()}
-                    disabled={isLoading || isProcessingImage}
+                    disabled={isLoading}
                     className="gap-2"
                     data-testid="button-upload-image"
                   >
@@ -127,7 +103,7 @@ export function LetterInput({ onSubmit, isLoading }: LetterInputProps) {
                     variant="outline"
                     size="sm"
                     onClick={() => cameraInputRef.current?.click()}
-                    disabled={isLoading || isProcessingImage}
+                    disabled={isLoading}
                     className="gap-2"
                     data-testid="button-take-photo"
                   >
@@ -161,13 +137,6 @@ export function LetterInput({ onSubmit, isLoading }: LetterInputProps) {
                 </div>
               </div>
 
-              {isProcessingImage && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                  <span>{t("processingImage")}</span>
-                </div>
-              )}
-
               <Textarea
                 id="letter-input"
                 value={text}
@@ -187,7 +156,7 @@ export function LetterInput({ onSubmit, isLoading }: LetterInputProps) {
               <Button
                 type="submit"
                 size="lg"
-                disabled={text.trim().length < 10 || isLoading || isProcessingImage}
+                disabled={text.trim().length < 10 || isLoading}
                 className="w-full sm:w-auto text-lg px-8 py-6 rounded-full font-semibold gap-2"
                 data-testid="button-simplify"
               >

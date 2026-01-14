@@ -39,7 +39,7 @@ Languages supported: Hebrew, English (toggle in header)
 
 ### Key Endpoints
 - `POST /api/simplify` - Main endpoint that accepts bureaucratic text and returns simplified explanation with images
-- `POST /api/ocr` - Accepts image uploads and extracts text using Gemini AI
+- `POST /api/simplify-image` - Accepts image uploads and analyzes documents directly using Gemini multimodal AI
 
 ### AI Services
 - **Text Simplification**: OpenAI GPT models via Replit AI Integrations
@@ -49,9 +49,9 @@ Languages supported: Hebrew, English (toggle in header)
 - **Image Generation**: Google Gemini (gemini-2.5-flash-image) via Replit AI Integrations
   - Creates calming, professional illustrations for key points
   - Soft colors, minimalist iconographic style
-- **OCR**: Google Gemini (gemini-2.5-flash) via Replit AI Integrations
-  - Extracts text from uploaded images or camera captures
-  - Supports Hebrew and English text
+- **Multimodal Document Analysis**: Google Gemini (gemini-2.5-flash) via Replit AI Integrations
+  - Analyzes uploaded document images directly using multimodal AI
+  - Extracts and simplifies content in Hebrew or English
 
 ### Data Layer
 - **ORM**: Drizzle ORM with PostgreSQL dialect

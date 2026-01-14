@@ -37,8 +37,11 @@ export type InsertExplanation = z.infer<typeof insertExplanationSchema>;
 export type Explanation = typeof explanations.$inferSelect;
 
 export const simplifyRequestSchema = z.object({
-  text: z.string().min(10, "Please provide at least 10 characters of text"),
+  text: z.string().optional(),
   language: z.enum(["he", "en"]).default("he"),
+}).refine((data) => data.text && data.text.length >= 10, {
+  message: "Please provide at least 10 characters of text",
+  path: ["text"],
 });
 
 export type SimplifyRequest = z.infer<typeof simplifyRequestSchema>;

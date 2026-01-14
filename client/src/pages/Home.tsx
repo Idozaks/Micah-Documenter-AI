@@ -29,45 +29,79 @@ export default function Home() {
   const { toast } = useToast();
   const { t, language } = useLanguage();
 
+  const startProcessingUI = () => {
+    setAppState("processing");
+    setProcessingStep("simplifying");
+    
+    setTimeout(() => {
+      setProcessingStep("generating");
+    }, 3000);
+    
+    setTimeout(() => {
+      setProcessingStep("complete");
+    }, 6000);
+  };
+
+  const handleSuccess = (data: SimplifyResponse) => {
+    setProcessingStep("complete");
+    setTimeout(() => {
+      setResult(data.result);
+      setGeneratedImages(data.images);
+      setAppState("results");
+    }, 500);
+  };
+
+  const handleError = (error: Error) => {
+    toast({
+      title: t("somethingWentWrong"),
+      description: error instanceof Error ? error.message : t("failedToProcess"),
+      variant: "destructive",
+    });
+    setAppState("input");
+    setProcessingStep("simplifying");
+  };
+
   const simplifyMutation = useMutation({
     mutationFn: async ({ text, language }: { text: string; language: string }): Promise<SimplifyResponse> => {
       const response = await apiRequest("POST", "/api/simplify", { text, language });
       return response.json();
     },
-    onMutate: () => {
-      setAppState("processing");
-      setProcessingStep("simplifying");
+    onMutate: startProcessingUI,
+    onSuccess: handleSuccess,
+    onError: handleError,
+  });
+
+  const simplifyImageMutation = useMutation({
+    mutationFn: async ({ file, language }: { file: File; language: string }): Promise<SimplifyResponse> => {
+      const formData = new FormData();
+      formData.append("image", file);
+      formData.append("language", language);
       
-      setTimeout(() => {
-        setProcessingStep("generating");
-      }, 3000);
-      
-      setTimeout(() => {
-        setProcessingStep("complete");
-      }, 6000);
-    },
-    onSuccess: (data) => {
-      setProcessingStep("complete");
-      setTimeout(() => {
-        setResult(data.result);
-        setGeneratedImages(data.images);
-        setAppState("results");
-      }, 500);
-    },
-    onError: (error) => {
-      toast({
-        title: t("somethingWentWrong"),
-        description: error instanceof Error ? error.message : t("failedToProcess"),
-        variant: "destructive",
+      const response = await fetch("/api/simplify-image", {
+        method: "POST",
+        body: formData,
       });
-      setAppState("input");
-      setProcessingStep("simplifying");
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Failed to process image");
+      }
+      
+      return response.json();
     },
+    onMutate: startProcessingUI,
+    onSuccess: handleSuccess,
+    onError: handleError,
   });
 
   const handleSubmit = (text: string) => {
     setOriginalText(text);
     simplifyMutation.mutate({ text, language });
+  };
+
+  const handleSubmitImage = (file: File) => {
+    setOriginalText("");
+    simplifyImageMutation.mutate({ file, language });
   };
 
   const handleTryAgain = () => {
@@ -92,7 +126,11 @@ export default function Home() {
         {appState === "input" && (
           <>
             <HeroSection />
-            <LetterInput onSubmit={handleSubmit} isLoading={simplifyMutation.isPending} />
+            <LetterInput 
+              onSubmit={handleSubmit} 
+              onSubmitImage={handleSubmitImage}
+              isLoading={simplifyMutation.isPending || simplifyImageMutation.isPending} 
+            />
           </>
         )}
 
