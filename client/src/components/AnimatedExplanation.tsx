@@ -202,32 +202,72 @@ export function AnimatedExplanation({
         </div>
       </div>
 
-      {/* Controls - Large and easy to tap */}
-      <div className="flex items-center justify-center gap-4 md:gap-6">
-        <Button
-          variant="outline"
-          size="lg"
+      {/* Controls - Large circular buttons with slide numbers */}
+      <div className="flex items-center justify-center gap-6 md:gap-8">
+        {/* Previous button */}
+        <button
           onClick={() => goToSlide(currentSlide - 1)}
           disabled={currentSlide === 0}
           aria-label={t("previous")}
           data-testid="button-prev-slide"
-          className="gap-3 px-6 md:px-8 py-6 text-lg font-semibold min-w-[140px] md:min-w-[160px]"
+          className={`flex flex-col items-center justify-center w-20 h-20 md:w-24 md:h-24 rounded-full border-3 transition-all ${
+            currentSlide === 0
+              ? "border-muted bg-muted/30 text-muted-foreground cursor-not-allowed"
+              : "border-blue-400 bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900 hover:scale-105 shadow-lg"
+          }`}
         >
           {isRTL ? (
-            <SkipForward className="w-6 h-6" aria-hidden="true" />
+            <SkipForward className="w-8 h-8 md:w-10 md:h-10" aria-hidden="true" />
           ) : (
-            <SkipBack className="w-6 h-6" aria-hidden="true" />
+            <SkipBack className="w-8 h-8 md:w-10 md:h-10" aria-hidden="true" />
           )}
-          <span>{t("previous")}</span>
-        </Button>
+          <span className="text-sm font-bold mt-1">
+            {currentSlide > 0 ? currentSlide : "-"}
+          </span>
+        </button>
 
+        {/* Current slide indicator */}
+        <div className="flex flex-col items-center">
+          <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-xl">
+            <span className="text-2xl md:text-3xl font-bold">{currentSlide + 1}</span>
+          </div>
+          <span className="text-sm text-muted-foreground mt-2 font-medium">
+            {t("slideOf", { current: currentSlide + 1, total: totalSlides })}
+          </span>
+        </div>
+
+        {/* Next button */}
+        <button
+          onClick={() => goToSlide(currentSlide + 1)}
+          disabled={currentSlide === totalSlides - 1}
+          aria-label={t("next")}
+          data-testid="button-next-slide"
+          className={`flex flex-col items-center justify-center w-20 h-20 md:w-24 md:h-24 rounded-full border-3 transition-all ${
+            currentSlide === totalSlides - 1
+              ? "border-muted bg-muted/30 text-muted-foreground cursor-not-allowed"
+              : "border-green-400 bg-green-50 dark:bg-green-950 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900 hover:scale-105 shadow-lg"
+          }`}
+        >
+          {isRTL ? (
+            <SkipBack className="w-8 h-8 md:w-10 md:h-10" aria-hidden="true" />
+          ) : (
+            <SkipForward className="w-8 h-8 md:w-10 md:h-10" aria-hidden="true" />
+          )}
+          <span className="text-sm font-bold mt-1">
+            {currentSlide < totalSlides - 1 ? currentSlide + 2 : "-"}
+          </span>
+        </button>
+      </div>
+
+      {/* Play/Pause button */}
+      <div className="flex justify-center">
         <Button
           variant="default"
           size="lg"
           onClick={() => onPlayingChange(!isPlaying)}
           aria-label={isPlaying ? t("pause") : t("play")}
           data-testid="button-play-pause"
-          className="gap-3 px-8 md:px-10 py-6 text-lg font-semibold min-w-[140px] md:min-w-[160px] shadow-lg"
+          className="gap-3 px-10 py-6 text-lg font-semibold rounded-full shadow-lg"
         >
           {isPlaying ? (
             <>
@@ -241,39 +281,24 @@ export function AnimatedExplanation({
             </>
           )}
         </Button>
-
-        <Button
-          variant="outline"
-          size="lg"
-          onClick={() => goToSlide(currentSlide + 1)}
-          disabled={currentSlide === totalSlides - 1}
-          aria-label={t("next")}
-          data-testid="button-next-slide"
-          className="gap-3 px-6 md:px-8 py-6 text-lg font-semibold min-w-[140px] md:min-w-[160px]"
-        >
-          <span>{t("next")}</span>
-          {isRTL ? (
-            <SkipBack className="w-6 h-6" aria-hidden="true" />
-          ) : (
-            <SkipForward className="w-6 h-6" aria-hidden="true" />
-          )}
-        </Button>
       </div>
 
-      {/* Dot navigation - Larger dots */}
-      <div className="flex justify-center gap-4">
+      {/* Numbered slide navigation */}
+      <div className="flex justify-center gap-3 flex-wrap">
         {slides.map((slide, index) => (
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`transition-all rounded-full ${
+            className={`w-10 h-10 md:w-12 md:h-12 rounded-full font-bold text-lg transition-all ${
               index === currentSlide
-                ? "w-14 h-5 bg-primary shadow-md"
-                : "w-5 h-5 bg-muted hover:bg-muted-foreground/40 hover:scale-110"
+                ? "bg-primary text-primary-foreground shadow-lg scale-110"
+                : "bg-muted text-muted-foreground hover:bg-muted-foreground/20 hover:scale-105"
             }`}
             aria-label={`${t("goToSlide") || "Go to slide"} ${index + 1}: ${slide.title}`}
             data-testid={`slide-dot-${index}`}
-          />
+          >
+            {index + 1}
+          </button>
         ))}
       </div>
     </div>
