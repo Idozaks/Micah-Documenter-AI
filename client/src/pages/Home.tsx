@@ -32,6 +32,7 @@ export default function Home() {
   const startProcessingUI = () => {
     setAppState("processing");
     setProcessingStep("simplifying");
+    window.scrollTo({ top: 0, behavior: "smooth" });
     
     setTimeout(() => {
       setProcessingStep("generating");
@@ -48,6 +49,7 @@ export default function Home() {
       setResult(data.result);
       setGeneratedImages(data.images);
       setAppState("results");
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }, 500);
   };
 
@@ -59,6 +61,7 @@ export default function Home() {
     });
     setAppState("input");
     setProcessingStep("simplifying");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const simplifyMutation = useMutation({
