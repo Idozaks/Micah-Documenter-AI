@@ -9,28 +9,33 @@ interface ProcessingStateProps {
   step: "simplifying" | "generating" | "complete";
 }
 
-function useLogarithmicProgress(durationSeconds: number = 30) {
+function useAsymptoticProgress(durationSeconds: number = 30) {
   const [progress, setProgress] = useState(0);
   const [startTime] = useState(() => Date.now());
 
   useEffect(() => {
-    const k = 9;
-    const maxLog = Math.log(1 + durationSeconds * k);
-
     const updateProgress = () => {
       const elapsed = (Date.now() - startTime) / 1000;
+      const t = elapsed / durationSeconds;
       
       if (elapsed >= durationSeconds) {
-        setProgress(99);
+        setProgress(95);
         return;
       }
 
-      const logProgress = Math.log(1 + elapsed * k) / maxLog;
-      const smoothProgress = Math.min(logProgress * 99, 99);
-      setProgress(smoothProgress);
+      // Asymptotic ease-out: fast start, gradually approaching but never reaching 100
+      // Uses 1 - e^(-kt) curve for natural deceleration
+      const k = 3.5;
+      const asymptotic = 1 - Math.exp(-k * t);
+      
+      // Scale to max 95% and add subtle micro-fluctuations for organic feel
+      const baseProgress = asymptotic * 95;
+      const microVariation = Math.sin(elapsed * 0.8) * 0.3;
+      
+      setProgress(Math.min(baseProgress + microVariation, 95));
     };
 
-    const intervalId = setInterval(updateProgress, 50);
+    const intervalId = setInterval(updateProgress, 60);
     updateProgress();
 
     return () => clearInterval(intervalId);
@@ -41,7 +46,7 @@ function useLogarithmicProgress(durationSeconds: number = 30) {
 
 export function ProcessingState({ step }: ProcessingStateProps) {
   const { t } = useLanguage();
-  const progress = useLogarithmicProgress(30);
+  const progress = useAsymptoticProgress(30);
 
   const steps = [
     { id: "simplifying", label: t("stepReading"), icon: FileText },
