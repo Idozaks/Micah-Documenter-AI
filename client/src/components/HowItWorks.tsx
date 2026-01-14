@@ -1,38 +1,38 @@
 import { FileText, Sparkles, Play } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
-
-const steps = [
-  {
-    icon: FileText,
-    title: "Paste Your Letter",
-    description:
-      "Copy any official document - from municipalities, government agencies, medical institutions, or legal notices.",
-  },
-  {
-    icon: Sparkles,
-    title: "AI Simplifies It",
-    description:
-      "Our AI reads the complex language and rewrites it in simple, friendly terms anyone can understand.",
-  },
-  {
-    icon: Play,
-    title: "Watch & Understand",
-    description:
-      "See your letter explained with clear visuals and key action items highlighted for easy follow-up.",
-  },
-];
+import { useLanguage } from "@/hooks/useLanguage";
 
 export function HowItWorks() {
+  const { t } = useLanguage();
+
+  const steps = [
+    {
+      icon: FileText,
+      title: t("step1Title"),
+      description: t("step1Desc"),
+    },
+    {
+      icon: Sparkles,
+      title: t("step2Title"),
+      description: t("step2Desc"),
+    },
+    {
+      icon: Play,
+      title: t("step3Title"),
+      description: t("step3Desc"),
+    },
+  ];
+
   return (
     <section id="how-it-works" className="py-16 px-6 md:px-8 bg-muted/30">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-foreground mb-4" data-testid="text-how-it-works-title">
-            How It Works
+            {t("howItWorks")}
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Three simple steps to understand any official letter
+            {t("threeSimpleSteps")}
           </p>
         </div>
 
@@ -41,7 +41,7 @@ export function HowItWorks() {
             const Icon = step.icon;
             return (
               <motion.div
-                key={step.title}
+                key={index}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}

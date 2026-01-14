@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { Play, Pause, SkipBack, SkipForward, Volume2 } from "lucide-react";
+import { Play, Pause, SkipBack, SkipForward } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface AnimatedExplanationProps {
   summary: string;
@@ -16,19 +17,19 @@ interface AnimatedExplanationProps {
 export function AnimatedExplanation({
   summary,
   keyPoints,
-  actionItems,
   images,
   isPlaying,
   onPlayingChange,
 }: AnimatedExplanationProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const { t, isRTL } = useLanguage();
 
   const slides = [
-    { type: "summary", content: summary, title: "In Simple Terms" },
+    { type: "summary", content: summary, title: t("summary") },
     ...keyPoints.map((point, i) => ({
       type: "keypoint",
       content: point,
-      title: `Key Point ${i + 1}`,
+      title: `${t("keyPoints")} ${i + 1}`,
       image: images[i] || null,
     })),
   ];
@@ -101,17 +102,21 @@ export function AnimatedExplanation({
           size="icon"
           onClick={() => goToSlide(currentSlide - 1)}
           disabled={currentSlide === 0}
-          aria-label="Previous slide"
+          aria-label={t("previous")}
           data-testid="button-prev-slide"
         >
-          <SkipBack className="w-4 h-4" aria-hidden="true" />
+          {isRTL ? (
+            <SkipForward className="w-4 h-4" aria-hidden="true" />
+          ) : (
+            <SkipBack className="w-4 h-4" aria-hidden="true" />
+          )}
         </Button>
 
         <Button
           variant="default"
           size="icon"
           onClick={() => onPlayingChange(!isPlaying)}
-          aria-label={isPlaying ? "Pause" : "Play"}
+          aria-label={isPlaying ? t("pause") : t("play")}
           data-testid="button-play-pause"
         >
           {isPlaying ? (
@@ -126,13 +131,17 @@ export function AnimatedExplanation({
           size="icon"
           onClick={() => goToSlide(currentSlide + 1)}
           disabled={currentSlide === totalSlides - 1}
-          aria-label="Next slide"
+          aria-label={t("next")}
           data-testid="button-next-slide"
         >
-          <SkipForward className="w-4 h-4" aria-hidden="true" />
+          {isRTL ? (
+            <SkipBack className="w-4 h-4" aria-hidden="true" />
+          ) : (
+            <SkipForward className="w-4 h-4" aria-hidden="true" />
+          )}
         </Button>
 
-        <span className="text-sm text-muted-foreground ml-4">
+        <span className="text-sm text-muted-foreground ms-4">
           {currentSlide + 1} / {totalSlides}
         </span>
       </div>
@@ -147,7 +156,7 @@ export function AnimatedExplanation({
                 ? "bg-primary scale-110"
                 : "bg-muted hover:bg-muted-foreground/30"
             }`}
-            aria-label={`Go to slide ${index + 1}`}
+            aria-label={t("slideOf", { current: index + 1, total: totalSlides })}
             data-testid={`slide-dot-${index}`}
           />
         ))}

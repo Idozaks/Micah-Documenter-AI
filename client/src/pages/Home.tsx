@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/hooks/useLanguage";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { HeroSection } from "@/components/HeroSection";
@@ -26,6 +27,7 @@ export default function Home() {
   const [generatedImages, setGeneratedImages] = useState<string[]>([]);
   const [originalText, setOriginalText] = useState("");
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const simplifyMutation = useMutation({
     mutationFn: async (text: string): Promise<SimplifyResponse> => {
@@ -54,8 +56,8 @@ export default function Home() {
     },
     onError: (error) => {
       toast({
-        title: "Something went wrong",
-        description: error instanceof Error ? error.message : "Failed to process your letter. Please try again.",
+        title: t("somethingWentWrong"),
+        description: error instanceof Error ? error.message : t("failedToProcess"),
         variant: "destructive",
       });
       setAppState("input");

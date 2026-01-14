@@ -1,35 +1,22 @@
-import { useState } from "react";
-import { Sparkles, FileText, Trash2 } from "lucide-react";
+import { useState, useRef } from "react";
+import { Sparkles, FileText, Trash2, Upload, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface LetterInputProps {
   onSubmit: (text: string) => void;
   isLoading: boolean;
 }
 
-const SAMPLE_LETTER = `Dear Resident,
-
-Re: Notice of Assessment Review - Property Tax Reassessment FY 2024-2025
-
-Pursuant to Section 34.7(a) of the Municipal Property Assessment Act, this correspondence serves to notify you that your property, located at the aforementioned address, has been subject to a comprehensive reassessment review as mandated by the triennial valuation schedule.
-
-Following this reassessment, the assessed value of your property has been adjusted to reflect current market conditions. The revised assessment may result in modifications to your annual property tax liability, effective from the commencement of the next fiscal year.
-
-You are hereby advised that you retain the right to file an appeal against this assessment within thirty (30) calendar days from the date of this notice. Failure to submit a written objection within the prescribed timeframe shall constitute acceptance of the revised assessment.
-
-Should you wish to contest this determination, please submit Form PA-31B (Notice of Appeal) to the Assessment Review Board, accompanied by supporting documentation establishing grounds for reconsideration.
-
-For inquiries regarding payment options or to request an installment arrangement, contact our Revenue Services Department during regular business hours.
-
-Respectfully,
-Office of Property Assessment
-City of Metropolitan`;
-
 export function LetterInput({ onSubmit, isLoading }: LetterInputProps) {
   const [text, setText] = useState("");
+  const [isProcessingImage, setIsProcessingImage] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const { t } = useLanguage();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,11 +26,51 @@ export function LetterInput({ onSubmit, isLoading }: LetterInputProps) {
   };
 
   const loadSample = () => {
-    setText(SAMPLE_LETTER);
+    setText(t("sampleLetter"));
   };
 
   const clearText = () => {
     setText("");
+  };
+
+  const processImage = async (file: File) => {
+    setIsProcessingImage(true);
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+
+      const response = await fetch("/api/ocr", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.text) {
+          setText((prev) => (prev ? prev + "\n\n" + data.text : data.text));
+        }
+      }
+    } catch (error) {
+      console.error("OCR failed:", error);
+    } finally {
+      setIsProcessingImage(false);
+    }
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      processImage(file);
+    }
+    e.target.value = "";
+  };
+
+  const handleCameraCapture = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      processImage(file);
+    }
+    e.target.value = "";
   };
 
   return (
@@ -56,16 +83,57 @@ export function LetterInput({ onSubmit, isLoading }: LetterInputProps) {
                 1
               </div>
               <h2 className="text-2xl font-semibold text-foreground">
-                Paste Your Letter
+                {t("pasteYourLetter")}
               </h2>
             </div>
 
             <div className="space-y-4">
-              <div className="flex items-center justify-between flex-wrap gap-2">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <Label htmlFor="letter-input" className="text-lg text-foreground">
-                  Official letter or document text
+                  {t("letterLabel")}
                 </Label>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                    data-testid="input-file-upload"
+                  />
+                  <input
+                    ref={cameraInputRef}
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    onChange={handleCameraCapture}
+                    className="hidden"
+                    data-testid="input-camera-capture"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isLoading || isProcessingImage}
+                    className="gap-2"
+                    data-testid="button-upload-image"
+                  >
+                    <Upload className="w-4 h-4" aria-hidden="true" />
+                    {t("uploadImage")}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => cameraInputRef.current?.click()}
+                    disabled={isLoading || isProcessingImage}
+                    className="gap-2"
+                    data-testid="button-take-photo"
+                  >
+                    <Camera className="w-4 h-4" aria-hidden="true" />
+                    {t("takePhoto")}
+                  </Button>
                   <Button
                     type="button"
                     variant="outline"
@@ -75,7 +143,7 @@ export function LetterInput({ onSubmit, isLoading }: LetterInputProps) {
                     data-testid="button-load-sample"
                   >
                     <FileText className="w-4 h-4" aria-hidden="true" />
-                    Try Sample
+                    {t("trySample")}
                   </Button>
                   {text.length > 0 && (
                     <Button
@@ -87,24 +155,31 @@ export function LetterInput({ onSubmit, isLoading }: LetterInputProps) {
                       data-testid="button-clear-text"
                     >
                       <Trash2 className="w-4 h-4" aria-hidden="true" />
-                      Clear
+                      {t("clear")}
                     </Button>
                   )}
                 </div>
               </div>
 
+              {isProcessingImage && (
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                  <span>{t("processingImage")}</span>
+                </div>
+              )}
+
               <Textarea
                 id="letter-input"
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-                placeholder="Copy and paste the official letter text here..."
+                placeholder={t("placeholder")}
                 className="min-h-48 md:min-h-64 text-lg leading-relaxed resize-y"
                 disabled={isLoading}
                 data-testid="input-letter-text"
               />
 
               <p className="text-sm text-muted-foreground">
-                Your text is processed securely and never stored permanently.
+                {t("secureProcessing")}
               </p>
             </div>
 
@@ -112,17 +187,17 @@ export function LetterInput({ onSubmit, isLoading }: LetterInputProps) {
               <Button
                 type="submit"
                 size="lg"
-                disabled={text.trim().length < 10 || isLoading}
+                disabled={text.trim().length < 10 || isLoading || isProcessingImage}
                 className="w-full sm:w-auto text-lg px-8 py-6 rounded-full font-semibold gap-2"
                 data-testid="button-simplify"
               >
                 <Sparkles className="w-5 h-5" aria-hidden="true" />
-                Simplify & Explain
+                {t("simplifyAndExplain")}
               </Button>
 
               {text.trim().length > 0 && text.trim().length < 10 && (
                 <p className="text-sm text-muted-foreground">
-                  Please provide at least 10 characters of text.
+                  {t("minCharsRequired")}
                 </p>
               )}
             </div>

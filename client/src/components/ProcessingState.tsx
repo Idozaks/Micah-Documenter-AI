@@ -1,18 +1,21 @@
 import { Loader2, FileText, Sparkles, Image } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface ProcessingStateProps {
   step: "simplifying" | "generating" | "complete";
 }
 
-const steps = [
-  { id: "simplifying", label: "Reading your letter...", icon: FileText },
-  { id: "generating", label: "Creating visual explanation...", icon: Image },
-  { id: "complete", label: "Almost ready!", icon: Sparkles },
-];
-
 export function ProcessingState({ step }: ProcessingStateProps) {
+  const { t } = useLanguage();
+
+  const steps = [
+    { id: "simplifying", label: t("stepReading"), icon: FileText },
+    { id: "generating", label: t("stepGenerating"), icon: Image },
+    { id: "complete", label: t("stepAlmostReady"), icon: Sparkles },
+  ];
+
   const currentStepIndex = steps.findIndex((s) => s.id === step);
 
   return (
@@ -31,11 +34,11 @@ export function ProcessingState({ step }: ProcessingStateProps) {
             </motion.div>
 
             <h2 className="text-2xl font-semibold text-foreground mb-4" data-testid="text-processing-title">
-              Processing Your Letter
+              {t("processingTitle")}
             </h2>
 
             <p className="text-lg text-muted-foreground mb-8 max-w-md">
-              Our AI is analyzing the document and preparing a clear explanation for you.
+              {t("processingSubtitle")}
             </p>
 
             <div className="w-full max-w-sm space-y-4">
@@ -78,7 +81,7 @@ export function ProcessingState({ step }: ProcessingStateProps) {
             </div>
 
             <p className="mt-8 text-sm text-muted-foreground">
-              This usually takes 10-30 seconds
+              {t("usuallyTakes")}
             </p>
           </div>
         </Card>
