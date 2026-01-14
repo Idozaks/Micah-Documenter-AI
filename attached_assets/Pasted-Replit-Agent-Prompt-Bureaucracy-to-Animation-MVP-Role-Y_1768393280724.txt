@@ -1,0 +1,30 @@
+Replit Agent Prompt: Bureaucracy-to-Animation MVP
+Role: You are an expert Full-Stack Developer and AI Engineer. Project Objective: Build an MVP for a service that uses AI to bridge the gap between citizens and authorities by converting official, complex, or "threatening" bureaucratic text into short, simplified animation videos. The primary goal is to reduce anxiety and make information accessible, particularly for the elderly population.
+1. Core User Workflow
+• Input: A text area where users can paste official letters from municipalities, government bodies, or medical summaries.
+• AI Processing (The "Brain"):
+    ◦ The system must first summarize and simplify the legalistic/bureaucratic language into a "friendly" and "clear" narrative.
+    ◦ It should identify key action items or explanations within the text.
+• Output: The system generates a short animation video that visually explains the content of the letter.
+2. Technical Requirements (MVP Scope)
+• Frontend: A simple, high-contrast, and accessible web interface (suitable for senior citizens).
+• AI Integration:
+    ◦ Use an LLM (like OpenAI's GPT-4) to simplify the text and create a storyboard script.
+    ◦ Integrate a text-to-video or animation API (such as HeyGen, D-ID, or Runway—Note: These specific tools are not mentioned in the sources, and you should verify their current API availability) to produce the visual output.
+• Differentiation Logic: Ensure the aesthetic of the animation is professional and serious for official communication, rather than looking like a "viral TikTok or Instagram" video.
+3. Specific Features to Implement
+• Text Simplification Engine: A backend function that takes "lawyer-speak" and outputs a script that "a child or an elderly person" could easily understand.
+• Animation Generator: A module that takes the simplified script and generates a short visual summary.
+• Video Player: A simple way for the user to view the resulting animation and perhaps a button to "Explain Again" if it remains unclear.
+4. Design Aesthetic
+• Vibe: Human, calming, and clear.
+• Avoid: Cluttered layouts or "scary" legal terminology.
+• Focus: High readability and ease of use for the third-age population.
+5. Initial "Test Case" (The Action Item)
+• Configure the app to specifically handle a sample "letter from the municipality" to demonstrate how it transforms "threatening" text into a helpful 30-second animation.
+
+--------------------------------------------------------------------------------
+Insights from the Sources for Development
+• Focus on the "Why": The sources emphasize that this isn't just a video tool; it is a tool for reducing the "anxiety level" of dealing with bureaucracy.
+• Unique Value Proposition: While tools for viral content exist, this MVP must find its differentiation by providing real value to people struggling with bureaucratic hurdles.
+• Scalability: While the focus is on bureaucracy, the architecture should allow for future expansion into summarizing medical information for doctors.
