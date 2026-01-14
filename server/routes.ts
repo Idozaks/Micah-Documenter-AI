@@ -26,9 +26,9 @@ export async function registerRoutes(
         });
       }
 
-      const { text } = validation.data;
+      const { text, language } = validation.data;
 
-      const result = await simplifyText(text);
+      const result = await simplifyText(text, language);
 
       let images: string[] = [];
       try {

@@ -27,11 +27,11 @@ export default function Home() {
   const [generatedImages, setGeneratedImages] = useState<string[]>([]);
   const [originalText, setOriginalText] = useState("");
   const { toast } = useToast();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const simplifyMutation = useMutation({
-    mutationFn: async (text: string): Promise<SimplifyResponse> => {
-      const response = await apiRequest("POST", "/api/simplify", { text });
+    mutationFn: async ({ text, language }: { text: string; language: string }): Promise<SimplifyResponse> => {
+      const response = await apiRequest("POST", "/api/simplify", { text, language });
       return response.json();
     },
     onMutate: () => {
@@ -67,12 +67,12 @@ export default function Home() {
 
   const handleSubmit = (text: string) => {
     setOriginalText(text);
-    simplifyMutation.mutate(text);
+    simplifyMutation.mutate({ text, language });
   };
 
   const handleTryAgain = () => {
     if (originalText) {
-      simplifyMutation.mutate(originalText);
+      simplifyMutation.mutate({ text: originalText, language });
     }
   };
 

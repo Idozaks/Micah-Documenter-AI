@@ -38,6 +38,7 @@ export type Explanation = typeof explanations.$inferSelect;
 
 export const simplifyRequestSchema = z.object({
   text: z.string().min(10, "Please provide at least 10 characters of text"),
+  language: z.enum(["he", "en"]).default("he"),
 });
 
 export type SimplifyRequest = z.infer<typeof simplifyRequestSchema>;

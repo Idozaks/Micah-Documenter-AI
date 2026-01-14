@@ -6,7 +6,10 @@ const openai = new OpenAI({
   baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
 });
 
-const SIMPLIFY_SYSTEM_PROMPT = `You are an expert at transforming complex bureaucratic and legal text into simple, friendly language that anyone can understand - especially elderly people who may feel anxious about official documents.
+function getSystemPrompt(language: "he" | "en"): string {
+  const isHebrew = language === "he";
+  
+  return `You are an expert at transforming complex bureaucratic and legal text into simple, friendly language that anyone can understand - especially elderly people who may feel anxious about official documents.
 
 Your job is to:
 1. Read the official letter/document carefully
@@ -21,13 +24,14 @@ Guidelines:
 - Use "you" and "your" to make it personal
 - If there are deadlines, make them very clear
 - If money is involved, be specific about amounts
+${isHebrew ? "- IMPORTANT: You MUST respond in Hebrew. All text in the JSON response MUST be in Hebrew." : "- Respond in English."}
 
 Respond in JSON format with these fields:
 {
-  "summary": "A 1-2 sentence overview of what this letter is about",
-  "simplifiedText": "The full letter rewritten in simple, friendly language",
-  "actionItems": ["List of specific things the person needs to do, if any"],
-  "keyPoints": ["3-5 key points from the letter in simple terms"],
+  "summary": "${isHebrew ? "סיכום של 1-2 משפטים על מה המכתב הזה" : "A 1-2 sentence overview of what this letter is about"}",
+  "simplifiedText": "${isHebrew ? "המכתב המלא מנוסח מחדש בשפה פשוטה וידידותית" : "The full letter rewritten in simple, friendly language"}",
+  "actionItems": ["${isHebrew ? "רשימת דברים ספציפיים שהאדם צריך לעשות, אם יש" : "List of specific things the person needs to do, if any"}"],
+  "keyPoints": ["${isHebrew ? "3-5 נקודות עיקריות מהמכתב במילים פשוטות" : "3-5 key points from the letter in simple terms"}"],
   "tone": "urgent | informational | positive | neutral"
 }
 
@@ -36,12 +40,13 @@ The tone should be:
 - "positive" if it's good news (refund, approval, etc.)
 - "informational" if it's just sharing information
 - "neutral" for general notices`;
+}
 
-export async function simplifyText(originalText: string): Promise<SimplifiedResult> {
+export async function simplifyText(originalText: string, language: "he" | "en" = "he"): Promise<SimplifiedResult> {
   const response = await openai.chat.completions.create({
     model: "gpt-5",
     messages: [
-      { role: "system", content: SIMPLIFY_SYSTEM_PROMPT },
+      { role: "system", content: getSystemPrompt(language) },
       { role: "user", content: originalText },
     ],
     response_format: { type: "json_object" },
@@ -51,8 +56,12 @@ export async function simplifyText(originalText: string): Promise<SimplifiedResu
   const content = response.choices[0]?.message?.content || "{}";
   const parsed = JSON.parse(content);
 
+  const fallbackSummary = language === "he" 
+    ? "לא הצלחנו לסכם את המכתב הזה." 
+    : "Unable to summarize this letter.";
+  
   return {
-    summary: parsed.summary || "Unable to summarize this letter.",
+    summary: parsed.summary || fallbackSummary,
     simplifiedText: parsed.simplifiedText || originalText,
     actionItems: parsed.actionItems || [],
     keyPoints: parsed.keyPoints || [],
